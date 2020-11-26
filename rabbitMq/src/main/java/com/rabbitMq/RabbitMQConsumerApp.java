@@ -38,49 +38,7 @@ public class RabbitMQConsumerApp {
 		System.out.println("====================== MAIN =========================");
 	}
 
-	public void run() throws Exception {
-		try {
-			System.out.println("#############################################################");
-			System.out.println(Thread.currentThread().getName());
-			ConnectionFactory factory = new ConnectionFactory();
-			final String host = "172.26.61.102";
-			factory.setHost(host);
-			final int port = 5672;
-			factory.setPort(port);
-			final String username = "gaanarmqprd";
-			factory.setUsername(username);
-			final String password = "gaanamqprd@2017";
-			factory.setPassword(password);
-			factory.setAutomaticRecoveryEnabled(true);
-			factory.setNetworkRecoveryInterval(10000);
-			final ExecutorService tp = Executors.newFixedThreadPool(2, new RabbitMqThreadFactory());
-			Connection connection = factory.newConnection(tp);
-			Channel channel = connection.createChannel();
-			final String queue = "queue_episode_push_notification";
-			final String exchange = "exchange_episode_push_notification";
-			final String routingKey = "queue_episode_push_notification";
-			final String exchangeType = "direct";
-			channel.queueDeclare(queue, true, false, false, null);
-			channel.exchangeDeclare(exchange, exchangeType, false, false, null);
-			channel.queueBind(queue, exchange, routingKey);
-//		channel.basicQos(100);
-			final DeliverCallback deliverCallback = (consumerTag, delivery) -> {
-				/*String mssg = new String(delivery.getBody(), "UTF-8");
-				mssg += "Received from message from the queue: " + Thread.currentThread().getName() + "  " + mssg;
-				System.out.println(mssg);*/
-				/*int count = ai.addAndGet(1);
-				if (count % 100 == 0)
-					channel.basicAck(delivery.getEnvelope().getDeliveryTag(), true);*/
-			};
-
-			channel.basicConsume(queue, false, deliverCallback, consumerTag -> {
-			});
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
+	
 	static class RabbitMqThreadFactory implements ThreadFactory {
 		private final AtomicInteger threadNumber = new AtomicInteger(1);
 		private final String namePrefix;
